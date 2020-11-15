@@ -3,12 +3,19 @@ import facebook
 from instagram.client import InstagramAPI
 import requests
 from tkinter import *
+from PIL import Image
+from urllib.request import urlopen
+
+
 def func():
     social = var.get()
     user_id = ent.get()
     if social == 0:
-        vk = VkApi(app_id=7646807, token='1bfbce991bfbce991bfbce99991b8f60ce11bfb1bfbce9944664b4da26b585a50448b66').get_api()
-        data = vk.users.get(user_ids=user_id, fields=['city', 'country', 'education', 'interests','about'])[0]
+        vk = VkApi(app_id=7646807,
+                   token='1bfbce991bfbce991bfbce99991b8f60ce11bfb1bfbce9944664b4da26b585a50448b66').get_api()
+        data = vk.users.get(user_ids=user_id, fields=['city', 'country', 'education', 'interests', 'about', 'photo_max_orig'])[0]
+        image = Image.open(urlopen(data['photo_max_orig']))
+        image.show()
         output = ''
         output += ('профиль закрыт' if data['is_closed'] else 'профиль открыт') + '\n'
         output += (data['city']['title'] if 'city' in data else 'город не указан') + '\n'
@@ -18,12 +25,14 @@ def func():
         lab2['text'] = output
     elif social == 1:
         output2 = ''
-        replay = requests.get('https://graph.instagram.com/'+user_id+'?fields=id,username&access_token='+'IGQVJVbndKX19uTDZAkT0pLeHpjejloR2p5eWdZAQkRtZA0xLWDdrZAmRmVVE2bURSa01jb2NMdmZAIYVFXRWlOamUyWUFCZAUp1SWZAvcEhrTV9uSGtnU043bWJ2MkpOaGV3aTFWbTF5N0czRDZA4NW00RnJaaQZDZD')
+        replay = requests.get(
+            'https://graph.instagram.com/' + user_id + '?fields=id,username&access_token=' + 'IGQVJVbndKX19uTDZAkT0pLeHpjejloR2p5eWdZAQkRtZA0xLWDdrZAmRmVVE2bURSa01jb2NMdmZAIYVFXRWlOamUyWUFCZAUp1SWZAvcEhrTV9uSGtnU043bWJ2MkpOaGV3aTFWbTF5N0czRDZA4NW00RnJaaQZDZD')
         output2 += (replay.text) + '\n'
         lab2['text'] = output2
     elif social == 2:
         output3 = ''
-        graph = facebook.GraphAPI(access_token='EAAJ0cmAkx5MBAJsBcNj84Gq6Jxbp5kC03GzVNuKPVN6cFNKfWnIkaN4pIuDYC5L0U44YQyy4s4ImUnIwmwZB6GgXKLcA3QPksEmYTR1FhyxoqZAPHyZB1nsI9jLoxeNEOTfcfhqxkBLJxZABmZCXZCxNJ7iSvEOo7sdTK4hB522hvsaindAyexWHI91rR0EYLw1Mqdajl2Rag6sZBx22xTnGv2y5rDBqSUVnyzexZAlHWJoZB9RsNxgtJBm4qMWx36IAZD')
+        graph = facebook.GraphAPI(
+            access_token='EAAJ0cmAkx5MBAJsBcNj84Gq6Jxbp5kC03GzVNuKPVN6cFNKfWnIkaN4pIuDYC5L0U44YQyy4s4ImUnIwmwZB6GgXKLcA3QPksEmYTR1FhyxoqZAPHyZB1nsI9jLoxeNEOTfcfhqxkBLJxZABmZCXZCxNJ7iSvEOo7sdTK4hB522hvsaindAyexWHI91rR0EYLw1Mqdajl2Rag6sZBx22xTnGv2y5rDBqSUVnyzexZAlHWJoZB9RsNxgtJBm4qMWx36IAZD')
         user_fields = graph.get_object(user_id, fields='location{location{city,country}}')
         location = user_fields.get('location', {}).get('location', {})
         output3 += (location['city'] if 'city' in location else 'город не указан') + '\n'
