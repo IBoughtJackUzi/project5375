@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from vk_api.vk_api import VkApi
 import facebook
-from instagram.client import InstagramAPI
 import requests
 from tkinter import *
 from PIL import Image
